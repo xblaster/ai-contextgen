@@ -1,28 +1,39 @@
 {
-    "name": "ai-contextgen",
-    "version": "1.0.0",
-    "description": "Generate a Markdown snapshot of your project folder for AI context, respecting .gitignore and skipping large/binary files.",
-    "main": "AI-ContextGen.js",
-    "bin": {
-        "ai-contextgen": "./AI-ContextGen.js"
-    },
-    "scripts": {
-        "start": "node AI-ContextGen.js"
-    },
-    "keywords": [
-        "AI",
-        "context",
-        "markdown",
-        "snapshot",
-        "gitignore",
-        "cli"
-    ],
-    "author": "Jérôme WAX",
-    "license": "MIT",
-    "dependencies": {
-        "cli-progress": "^3.12.0",
-        "commander": "^11.0.0",
-        "i": "^0.3.7",
-        "ignore": "^5.2.0"
-    }
+  "name": "@xblaster/ai-contextgen",
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Generate a Markdown snapshot of your project folder for AI context, respecting .gitignore and skipping large/binary files.",
+  "main": "ai-contextgen",
+  "bin": {
+    "ai-contextgen": "ai-contextgen.js"
+  },
+  "scripts": {
+    "start": "node ai-contextgen.js"
+  },
+  "keywords": [
+    "AI",
+    "context",
+    "markdown",
+    "snapshot",
+    "gitignore",
+    "cli"
+  ],
+  "author": "Jérôme WAX",
+  "license": "MIT",
+  "dependencies": {
+    "cli-progress": "^3.12.0",
+    "commander": "^11.0.0",
+    "ignore": "^5.2.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xblaster/ai-contextgen.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xblaster/ai-contextgen/issues"
+  },
+  "homepage": "https://github.com/xblaster/ai-contextgen#readme"
 }
