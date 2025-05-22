@@ -130,40 +130,7 @@ console.log('Hello, World!');
 
 ---
 
-## 🤝 Contributing
-
-Contributions welcome! The project structure includes:
-
-```
-ai-contextgen/
-├── aicontextgen.js     # Main CLI application
-├── package.json        # Project configuration
-├── README.md          # Documentation
-└── .gitignore         # Git ignore rules
-```
-
-### Development Setup
-1. Fork the repository
-2. Clone your fork: `git clone <your-fork-url>`
-3. Install dependencies: `npm install`
-4. Make your changes
-5. Test: `node aicontextgen.js --input ./test-project`
-6. Submit a pull request
-
----
 
 ## 📝 License
 
 MIT License - see LICENSE file for details
-
----
-
-## 🔗 Links
-
-- **Issues**: [Report bugs or request features](../../issues)
-- **Pull Requests**: [Contribute to the project](../../pulls)
-- **Releases**: [View version history](../../releases)
-
----
-
-*AI-ContextGen - Making project context AI-friendly, one snapshot at a time.*
