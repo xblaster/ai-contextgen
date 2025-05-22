@@ -23,11 +23,11 @@
   "author": "Jérôme WAX",
   "license": "MIT",
   "dependencies": {
+    "@xblaster/ai-contextgen": "^1.0.0",
     "cli-progress": "^3.12.0",
     "commander": "^11.0.0",
     "ignore": "^5.2.0"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xblaster/ai-contextgen.git"
