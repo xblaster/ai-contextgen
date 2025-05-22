@@ -1,0 +1,28 @@
+{
+    "name": "ai-contextgen",
+    "version": "1.0.0",
+    "description": "Generate a Markdown snapshot of your project folder for AI context, respecting .gitignore and skipping large/binary files.",
+    "main": "AI-ContextGen.js",
+    "bin": {
+      "ai-contextgen": "./AI-ContextGen.js"
+    },
+    "scripts": {
+      "start": "node AI-ContextGen.js"
+    },
+    "keywords": [
+      "AI",
+      "context",
+      "markdown",
+      "snapshot",
+      "gitignore",
+      "cli"
+    ],
+    "author": "Jérôme WAX",
+    "license": "MIT",
+    "dependencies": {
+      "cli-progress": "^3.12.0",
+      "commander": "^11.0.0",
+      "ignore": "^5.2.0"
+    }
+  }
+  
