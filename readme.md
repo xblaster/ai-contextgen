@@ -79,16 +79,6 @@ The tool creates a structured markdown file like this:
 }
 ```
 
----
-
-## `src/index.js`
-
-```javascript
-console.log('Hello, World!');
-```
-
----
-
 
 ### What Gets Included
 - ✅ All text-based source files
