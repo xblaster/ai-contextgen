@@ -65,7 +65,7 @@ function listFiles(dir, base, ig, bar) {
     const fullPath = path.join(dir, entry.name);
     const relPath = path.relative(base, fullPath);
     if (ig.ignores(relPath.replace(/\\/g, '/'))) {
-      bar.increment();
+      // Skip ignored files and directories without advancing the progress bar
       continue;
     }
     if (entry.isDirectory()) {
