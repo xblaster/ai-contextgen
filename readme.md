@@ -116,10 +116,24 @@ The tool creates a structured markdown file like this:
 - **File Detection**: Automatic binary file detection
 - **Git Integration**: Respects `.gitignore` and `.ai-ignore` patterns
 - **Output Format**: Clean markdown with syntax highlighting
-- **Performance**: Efficient file processing with progress indicators
+ - **Performance**: Efficient file processing with progress indicators
 
 ---
 
+## 🧪 Running Tests
+
+1. Install dependencies if not already done:
+   ```bash
+   npm install
+   ```
+2. Run the test suite with:
+   ```bash
+   npm test
+   ```
+
+Unit tests are executed automatically in the GitLab CI pipeline using the provided `.gitlab-ci.yml` configuration.
+
+---
 
 ## 📝 License
 
