@@ -41,7 +41,7 @@ ai-contextgen --input . --output snapshot.md
 git clone <your-repo-url>
 cd ai-contextgen
 npm install
-node aicontextgen.js --input . --output snapshot.md
+node ai-contextgen.js --input . --output snapshot.md
 ```
 
 ---
