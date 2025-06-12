@@ -2,7 +2,7 @@
 /*
  * AI-ContextGen
  * Automatically generates a Markdown snapshot of your codebase,
- * respecting .gitignore, ALWAYS skipping .git directory, and skipping large/binary files.
+ * respecting .gitignore and .ai-ignore, ALWAYS skipping .git directory, and skipping large/binary files.
  *
  * Usage:
  *   node AI-ContextGen.js --input ./folder --output snapshot.md
@@ -19,7 +19,7 @@ const program = new Command();
 program
   .option('-i, --input <folder>', 'Input folder to scan', '.')
   .option('-o, --output <filename>', 'Output markdown filename', '__aicontextgen.md')
-  .description('Generate a Markdown snapshot of your project folder for AI context, respecting .gitignore and skipping large/binary files.')
+  .description('Generate a Markdown snapshot of your project folder for AI context, respecting .gitignore, .ai-ignore and skipping large/binary files.')
   .parse(process.argv);
 
 // Show help if no args given
@@ -45,6 +45,11 @@ function getIgnoreFilter(baseDir) {
   const gitignorePath = path.join(baseDir, '.gitignore');
   if (fs.existsSync(gitignorePath)) {
     const content = fs.readFileSync(gitignorePath, 'utf8');
+    ig.add(content.split(/\r?\n/));
+  }
+  const aiIgnorePath = path.join(baseDir, '.ai-ignore');
+  if (fs.existsSync(aiIgnorePath)) {
+    const content = fs.readFileSync(aiIgnorePath, 'utf8');
     ig.add(content.split(/\r?\n/));
   }
   ig.add('.git/'); // <-- Always ignore .git directory
@@ -143,7 +148,7 @@ function filesToMarkdown(files, bar) {
     }
     countEntries(START_DIR);
 
-    console.log(`Scanning files in ${START_DIR} (skipping per .gitignore, .git/, and config)...`);
+    console.log(`Scanning files in ${START_DIR} (skipping per .gitignore, .ai-ignore, .git/, and config)...`);
     const barList = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
     barList.start(totalCount, 0);
     const files = listFiles(START_DIR, START_DIR, ig, barList);

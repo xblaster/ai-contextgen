@@ -1,13 +1,13 @@
 # AI-ContextGen
 
-**AI-ContextGen** is a Node.js CLI utility that generates comprehensive Markdown snapshots of your entire project structure, perfect for providing complete context to AI assistants (ChatGPT, Claude, etc.) while respecting `.gitignore` rules and filtering out binary files.
+**AI-ContextGen** is a Node.js CLI utility that generates comprehensive Markdown snapshots of your entire project structure, perfect for providing complete context to AI assistants (ChatGPT, Claude, etc.) while respecting `.gitignore` and `.ai-ignore` rules and filtering out binary files.
 
 ---
 
 ## ✨ Features
 
 - 📁 **Complete Project Snapshot** - Captures all text files in a structured markdown format
-- 🚫 **Smart Filtering** - Automatically respects `.gitignore` and skips binary/oversized files
+- 🚫 **Smart Filtering** - Automatically respects `.gitignore` and `.ai-ignore` and skips binary/oversized files
 - 📝 **AI-Ready Format** - Generates clean markdown with syntax highlighting for each file
 - ⚡ **Git Integration** - Works seamlessly with Git repositories
 - 🔧 **Configurable** - Command-line options for input/output customization
@@ -88,7 +88,7 @@ The tool creates a structured markdown file like this:
 
 ### What Gets Excluded
 - ❌ Binary files (images, executables, etc.)
-- ❌ Files listed in `.gitignore`
+- ❌ Files listed in `.gitignore` or `.ai-ignore`
 - ❌ Large files (configurable threshold)
 - ❌ Git internal files (unless explicitly needed)
 
@@ -114,7 +114,7 @@ The tool creates a structured markdown file like this:
 
 - **Language**: Node.js / JavaScript
 - **File Detection**: Automatic binary file detection
-- **Git Integration**: Respects `.gitignore` patterns
+- **Git Integration**: Respects `.gitignore` and `.ai-ignore` patterns
 - **Output Format**: Clean markdown with syntax highlighting
 - **Performance**: Efficient file processing with progress indicators
 
