@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 /*
  * AI-ContextGen
- * Automatically generates a Markdown snapshot of your codebase,
- * respecting .gitignore and .ai-ignore, ALWAYS skipping .git directory, and skipping large/binary files.
- *
- * Usage:
- *   node AI-ContextGen.js --input ./folder --output snapshot.md
+ * Generates a Markdown snapshot of your codebase or restores files
+ * from a snapshot. Respects .gitignore and .ai-ignore and skips large
+ * or binary files.
  */
 
 const fs = require('fs');
@@ -13,27 +11,11 @@ const path = require('path');
 const getIgnoreFilter = require('./src/getIgnoreFilter');
 const listFiles = require('./src/listFiles');
 const filesToMarkdown = require('./src/filesToMarkdown');
+const markdownToFiles = require('./src/markdownToFiles');
 const { Command } = require('commander');
 const cliProgress = require('cli-progress');
 
-const program = new Command();
-
-program
-  .option('-i, --input <folder>', 'Input folder to scan', '.')
-  .option('-o, --output <filename>', 'Output markdown filename', '__aicontextgen.md')
-  .description('Generate a Markdown snapshot of your project folder for AI context, respecting .gitignore, .ai-ignore and skipping large/binary files.')
-  .parse(process.argv);
-
-// Show help if no args given
-if (process.argv.length <= 2) {
-  program.help();
-}
-
-const options = program.opts();
-const START_DIR = path.resolve(options.input);
-const OUTPUT_FILENAME = options.output;
 const MAX_SIZE = 1024 * 1024; // 1MB
-
 const SKIP_EXTENSIONS = [
   '.png', '.jpg', '.jpeg', '.gif', '.svg',
   '.ico', '.exe', '.dll', '.zip', '.tar', '.gz',
@@ -41,59 +23,82 @@ const SKIP_EXTENSIONS = [
   '.woff', '.woff2', '.ttf', '.eot', '.otf'
 ];
 
-async function main() {
-  try {
-    if (!fs.existsSync(START_DIR) || !fs.statSync(START_DIR).isDirectory()) {
-      console.error(`Error: Input folder does not exist or is not a directory: ${START_DIR}`);
-      process.exit(1);
-    }
-
-  const ig = getIgnoreFilter(START_DIR, OUTPUT_FILENAME);
-
-    // First, count total entries to process for progress bar
-    let totalCount = 0;
-    function countEntries(dir) {
-      const entries = fs.readdirSync(dir, { withFileTypes: true });
-      for (const entry of entries) {
-        const fullPath = path.join(dir, entry.name);
-        const relPath = path.relative(START_DIR, fullPath);
-        if (ig.ignores(relPath.replace(/\\/g, '/'))) continue;
-        if (entry.isDirectory()) {
-          countEntries(fullPath);
-        } else {
-          totalCount++;
-        }
-      }
-    }
-    countEntries(START_DIR);
-
-    console.log(`Scanning files in ${START_DIR} (skipping per .gitignore, .ai-ignore, .git/, and config)...`);
-    const barList = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-    barList.start(totalCount, 0);
-    const files = listFiles(START_DIR, START_DIR, ig, barList);
-    barList.stop();
-
-    console.log(`\nGenerating markdown output for ${files.length} files...`);
-    const barRead = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-    barRead.start(files.length, 0);
-    const markdown = filesToMarkdown(START_DIR, files, { maxSize: MAX_SIZE, skipExtensions: SKIP_EXTENSIONS }, barRead);
-    barRead.stop();
-
-    fs.writeFileSync(path.join(START_DIR, OUTPUT_FILENAME), markdown, 'utf8');
-    console.log(`\nAI-ContextGen: Snapshot saved to ${path.join(START_DIR, OUTPUT_FILENAME)}`);
-
-  } catch (err) {
-    console.error('Fatal error:', err);
+function snapshotMain(startDir, outputFile) {
+  startDir = path.resolve(startDir);
+  if (!fs.existsSync(startDir) || !fs.statSync(startDir).isDirectory()) {
+    console.error(`Error: Input folder does not exist or is not a directory: ${startDir}`);
     process.exit(1);
   }
+
+  const ig = getIgnoreFilter(startDir, outputFile);
+  let totalCount = 0;
+  function countEntries(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      const relPath = path.relative(startDir, fullPath);
+      if (ig.ignores(relPath.replace(/\\/g, '/'))) continue;
+      if (entry.isDirectory()) {
+        countEntries(fullPath);
+      } else {
+        totalCount++;
+      }
+    }
+  }
+  countEntries(startDir);
+
+  console.log(`Scanning files in ${startDir} (skipping per .gitignore, .ai-ignore, .git/, and config)...`);
+  const barList = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+  barList.start(totalCount, 0);
+  const files = listFiles(startDir, startDir, ig, barList);
+  barList.stop();
+
+  console.log(`\nGenerating markdown output for ${files.length} files...`);
+  const barRead = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+  barRead.start(files.length, 0);
+  const markdown = filesToMarkdown(startDir, files, { maxSize: MAX_SIZE, skipExtensions: SKIP_EXTENSIONS }, barRead);
+  barRead.stop();
+
+  fs.writeFileSync(path.join(startDir, outputFile), markdown, 'utf8');
+  console.log(`\nAI-ContextGen: Snapshot saved to ${path.join(startDir, outputFile)}`);
 }
 
-if (require.main === module) {
-  main();
+function restoreMain(markdownPath, outputDir) {
+  const mdPath = path.resolve(markdownPath);
+  outputDir = path.resolve(outputDir);
+  if (!fs.existsSync(mdPath)) {
+    console.error(`Error: Markdown file does not exist: ${mdPath}`);
+    process.exit(1);
+  }
+  const content = fs.readFileSync(mdPath, 'utf8');
+  console.log(`Restoring files to ${outputDir}...`);
+  markdownToFiles(content, outputDir);
+  console.log('AI-ContextGen: Restoration complete');
 }
+
+const program = new Command();
+program
+  .name('ai-contextgen')
+  .description('Generate or restore project snapshots');
+
+program.command('snapshot', { isDefault: true })
+  .description('Create a Markdown snapshot of your project folder')
+  .option('-i, --input <folder>', 'Input folder to scan', '.')
+  .option('-o, --output <filename>', 'Output markdown filename', '__aicontextgen.md')
+  .action(opts => snapshotMain(opts.input, opts.output));
+
+program.command('restore <markdown>')
+  .description('Recreate files from a Markdown snapshot')
+  .option('-o, --output <folder>', 'Target folder', '.')
+  .action((markdown, opts) => restoreMain(markdown, opts.output));
+
+program.parse(process.argv);
 
 module.exports = {
   getIgnoreFilter,
   listFiles,
   filesToMarkdown,
+  markdownToFiles,
+  snapshotMain,
+  restoreMain,
 };
