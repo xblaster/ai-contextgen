@@ -16,10 +16,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    # Plain setup – no automatic npm cache, so missing lock files won't break the job
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+        cache: ''
     - run: npm install
     - run: npm test -- --coverage
     - name: Upload coverage
