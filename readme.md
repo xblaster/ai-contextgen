@@ -1,5 +1,7 @@
 # AI-ContextGen
 
+[![codecov](https://codecov.io/gh/xblaster/ai-contextgen/branch/main/graph/badge.svg)](https://codecov.io/gh/xblaster/ai-contextgen)
+
 **AI-ContextGen** is a Node.js CLI utility that generates comprehensive Markdown snapshots of your entire project structure, perfect for providing complete context to AI assistants (ChatGPT, Claude, etc.) while respecting `.gitignore` and `.ai-ignore` rules and filtering out binary files.
 
 ---
@@ -137,7 +139,7 @@ The tool creates a structured markdown file like this:
    npm test
    ```
 
-Unit tests are executed automatically in the GitLab CI pipeline using the provided `.gitlab-ci.yml` configuration.
+Unit tests are executed automatically via GitHub Actions using the included `.github/workflows/ci.yml` workflow.
 
 ---
 
