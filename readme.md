@@ -11,6 +11,7 @@
 - 📝 **AI-Ready Format** - Generates clean markdown with syntax highlighting for each file
 - ⚡ **Git Integration** - Works seamlessly with Git repositories
 - 🔧 **Configurable** - Command-line options for input/output customization
+- 📦 **Restore Snapshot** - Recreate files from a generated markdown
 
 ---
 
@@ -26,6 +27,10 @@ npx ai-contextgen
 npx ai-contextgen --input ./my-project --output project-context.md
 ```
 
+### Restore From Snapshot
+```bash
+npx ai-contextgen restore project-context.md --output ./restored
+```
 ---
 
 ## 💻 Installation & Usage
@@ -49,12 +54,13 @@ node ai-contextgen.js --input . --output snapshot.md
 ## 📋 Command Line Options
 
 ```bash
-ai-contextgen [options]
+ai-contextgen snapshot [options]
+ai-contextgen restore <markdown> [--output <folder>]
 ```
 
 **Options:**
 - `--input`, `-i` : Source directory to scan (default: current directory)
-- `--output`, `-o` : Output markdown file (default: `__aicontextgen.md`)
+- `--output`, `-o` : Output file or target directory (default: `__aicontextgen.md`)
 - `--help`, `-h` : Show help information
 
 ---
