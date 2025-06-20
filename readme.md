@@ -4,6 +4,8 @@
 
 **AI-ContextGen** is a Node.js CLI utility that generates comprehensive Markdown snapshots of your entire project structure, perfect for providing complete context to AI assistants (ChatGPT, Claude, etc.) while respecting `.gitignore` and `.ai-ignore` rules and filtering out binary files.
 
+The tool is published on [npm](https://www.npmjs.com/package/@xblaster/ai-contextgen). Install it globally or run via `npx` to quickly generate project snapshots.
+
 ---
 
 ## ✨ Features
@@ -21,17 +23,17 @@
 
 ### Using npx (Recommended)
 ```bash
-npx ai-contextgen
+npx @xblaster/ai-contextgen
 ```
 
 ### With Custom Options
 ```bash
-npx ai-contextgen --input ./my-project --output project-context.md
+npx @xblaster/ai-contextgen --input ./my-project --output project-context.md
 ```
 
 ### Restore From Snapshot
 ```bash
-npx ai-contextgen restore project-context.md --output ./restored
+npx @xblaster/ai-contextgen restore project-context.md --output ./restored
 ```
 ---
 
@@ -39,7 +41,7 @@ npx ai-contextgen restore project-context.md --output ./restored
 
 ### Global Installation
 ```bash
-npm install -g ai-contextgen
+npm install -g @xblaster/ai-contextgen
 ai-contextgen --input . --output snapshot.md
 ```
 
