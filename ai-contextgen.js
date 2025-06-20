@@ -46,6 +46,7 @@ function snapshotMain(startDir, outputFile) {
     }
   }
   countEntries(startDir);
+  console.log(`Found ${totalCount} files to snapshot.`);
 
   console.log(`Scanning files in ${startDir} (skipping per .gitignore, .ai-ignore, .git/, and config)...`);
   const barList = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
@@ -71,8 +72,13 @@ function restoreMain(markdownPath, outputDir) {
     process.exit(1);
   }
   const content = fs.readFileSync(mdPath, 'utf8');
-  console.log(`Restoring files to ${outputDir}...`);
-  markdownToFiles(content, outputDir);
+  const regex = /## `([^`]+)`\r?\n\r?\n```[^\n]*\r?\n([\s\S]*?)\r?\n```/g;
+  const files = [...content.matchAll(regex)];
+  console.log(`Restoring ${files.length} files to ${outputDir}...`);
+  const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+  bar.start(files.length, 0);
+  markdownToFiles(content, outputDir, bar);
+  bar.stop();
   console.log('AI-ContextGen: Restoration complete');
 }
 
