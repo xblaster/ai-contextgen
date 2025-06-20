@@ -13,7 +13,7 @@ function listFiles(dir, base, ig, bar) {
     if (entry.isDirectory()) {
       results = results.concat(listFiles(fullPath, base, ig, bar));
     } else {
-      results.push(relPath);
+      results.push(relPath.replace(/\\/g, '/'));
       if (bar && typeof bar.increment === 'function') {
         bar.increment();
       }
