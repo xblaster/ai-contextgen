@@ -38,4 +38,25 @@ describe('markdownToFiles', () => {
     expect(fs.readFileSync('/out/a.txt', 'utf8')).toBe('new content');
     expect(fs.readFileSync('/out/sub/b.txt', 'utf8')).toBe('hello');
   });
+
+  test('handles CRLF line endings', () => {
+    const md = [
+      '# AI-ContextGen Snapshot',
+      '',
+      '---',
+      '',
+      '## `a.txt`',
+      '',
+      '```txt',
+      'content',
+      '```',
+      '',
+      '---',
+      ''
+    ].join('\r\n');
+
+    mock({ '/out': {} });
+    markdownToFiles(md, '/out');
+    expect(fs.readFileSync('/out/a.txt', 'utf8')).toBe('content');
+  });
 });
