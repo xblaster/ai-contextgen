@@ -41,7 +41,7 @@ describe('snapshotMain and restoreMain', () => {
     const md = [
       '# AI-ContextGen Snapshot',
       '',
-      '---',
+      '###==AICG_FILE==###',
       '',
       `## \`a.txt\` (checksum: ${hash})`,
       '',
@@ -49,7 +49,7 @@ describe('snapshotMain and restoreMain', () => {
       'content',
       '```',
       '',
-      '---',
+      '###==AICG_FILE==###',
       '',
     ].join('\n');
     const mdWithChecksum = md + `\nGlobal checksum: ${globalHash}\n`;

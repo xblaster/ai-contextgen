@@ -13,7 +13,7 @@ describe('markdownToFiles', () => {
     const md = [
       '# AI-ContextGen Snapshot',
       '',
-      '---',
+      '###==AICG_FILE==###',
       '',
       `## \`a.txt\` (checksum: ${hashA})`,
       '',
@@ -21,7 +21,7 @@ describe('markdownToFiles', () => {
       'new content',
       '```',
       '',
-      '---',
+      '###==AICG_FILE==###',
       '',
       `## \`sub/b.txt\` (checksum: ${hashB})`,
       '',
@@ -29,7 +29,7 @@ describe('markdownToFiles', () => {
       'hello',
       '```',
       '',
-      '---',
+      '###==AICG_FILE==###',
       ''
     ].join('\n');
     globalHash.update(`a.txt:${hashA}\n`);
@@ -53,7 +53,7 @@ describe('markdownToFiles', () => {
     const md = [
       '# AI-ContextGen Snapshot',
       '',
-      '---',
+      '###==AICG_FILE==###',
       '',
       '## `a.txt`',
       '',
@@ -61,7 +61,7 @@ describe('markdownToFiles', () => {
       'content',
       '```',
       '',
-      '---',
+      '###==AICG_FILE==###',
       ''
     ].join('\r\n');
 
@@ -76,7 +76,7 @@ describe('markdownToFiles', () => {
     const md = [
       '# AI-ContextGen Snapshot',
       '',
-      '---',
+      '###==AICG_FILE==###',
       '',
       `## \`a.txt\` (checksum: ${hash})`,
       '',
@@ -84,7 +84,7 @@ describe('markdownToFiles', () => {
       content,
       '```',
       '',
-      '---',
+      '###==AICG_FILE==###',
       '',
     ].join('\n');
     const globalHash = crypto
@@ -104,7 +104,7 @@ describe('markdownToFiles', () => {
     const md = [
       '# AI-ContextGen Snapshot',
       '',
-      '---',
+      '###==AICG_FILE==###',
       '',
       `## \`a.txt\` (checksum: ${hash})`,
       '',
@@ -112,7 +112,7 @@ describe('markdownToFiles', () => {
       'bad',
       '```',
       '',
-      '---',
+      '###==AICG_FILE==###',
       ''
     ].join('\n');
     const globalHash = crypto.createHash('sha256').update(`a.txt:${hash}\n`).digest('hex');
@@ -128,7 +128,7 @@ describe('markdownToFiles', () => {
     const md = [
       '# AI-ContextGen Snapshot',
       '',
-      '---',
+      '###==AICG_FILE==###',
       '',
       `## \`a.txt\` (checksum: ${hash})`,
       '',
@@ -136,7 +136,7 @@ describe('markdownToFiles', () => {
       'content',
       '```',
       '',
-      '---',
+      '###==AICG_FILE==###',
       ''
     ].join('\n');
     const mdWithChecksum = md + `\nGlobal checksum: ${badGlobal}\n`;
