@@ -3,7 +3,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 function markdownToFiles(markdown, targetDir, bar) {
-  const regex = /## `([^`]+)`(?: \(checksum: ([^\)]+)\))?\r?\n\r?\n```[^\n]*\r?\n([\s\S]*?)\r?\n```/g;
+  const regex = /## `([^`]+)`(?: \(checksum: ([^\)]+)\))?\r?\n\r?\n```[^\n]*\r?\n([\s\S]*?)\r?\n```(?=\r?\n\r?\n###==AICG_FILE==###)/g;
   const matches = [...markdown.matchAll(regex)];
   const globalMatch = markdown.match(/Global checksum: ([a-f0-9]+)/);
   const expectedGlobal = globalMatch ? globalMatch[1] : null;
