@@ -12,11 +12,20 @@ function markdownToFiles(markdown, targetDir, bar) {
     const rel = match[1];
     const checksum = match[2];
     const content = match[3];
-    const hash = crypto.createHash('sha256').update(content).digest('hex');
-    if (checksum && hash !== checksum) {
+    const rawHash = crypto.createHash('sha256').update(content).digest('hex');
+    const normalizedHash = crypto
+      .createHash('sha256')
+      .update(content.replace(/\r\n/g, '\n'))
+      .digest('hex');
+    if (
+      checksum &&
+      rawHash !== checksum &&
+      normalizedHash !== checksum
+    ) {
       throw new Error(`Checksum mismatch for ${rel}`);
     }
-    globalHash.update(`${rel}:${hash}\n`);
+    const hashForGlobal = checksum || rawHash;
+    globalHash.update(`${rel}:${hashForGlobal}\n`);
     const filePath = path.join(targetDir, rel);
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
     fs.writeFileSync(filePath, content, 'utf8');
