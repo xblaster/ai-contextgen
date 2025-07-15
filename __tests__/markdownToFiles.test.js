@@ -70,6 +70,35 @@ describe('markdownToFiles', () => {
     expect(fs.readFileSync('/out/a.txt', 'utf8')).toBe('content');
   });
 
+  test('restores with checksum despite CRLF conversion', () => {
+    const content = 'line1\nline2';
+    const hash = crypto.createHash('sha256').update(content).digest('hex');
+    const md = [
+      '# AI-ContextGen Snapshot',
+      '',
+      '---',
+      '',
+      `## \`a.txt\` (checksum: ${hash})`,
+      '',
+      '```txt',
+      content,
+      '```',
+      '',
+      '---',
+      '',
+    ].join('\n');
+    const globalHash = crypto
+      .createHash('sha256')
+      .update(`a.txt:${hash}\n`)
+      .digest('hex');
+    const mdLF = md + `\nGlobal checksum: ${globalHash}\n`;
+    const mdCRLF = mdLF.replace(/\n/g, '\r\n');
+
+    mock({ '/out': {} });
+    markdownToFiles(mdCRLF, '/out');
+    expect(fs.readFileSync('/out/a.txt', 'utf8')).toBe(content.replace(/\n/g, '\r\n'));
+  });
+
   test('throws error on checksum mismatch', () => {
     const hash = crypto.createHash('sha256').update('good').digest('hex');
     const md = [
