@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 function filesToMarkdown(startDir, files, options, bar) {
   const MAX_SIZE = options.maxSize || 1024 * 1024;
@@ -10,7 +11,6 @@ function filesToMarkdown(startDir, files, options, bar) {
 
   for (const file of files) {
     md += `---\n\n`;
-    md += `## \`${file}\`\n\n`;
 
     const filePath = path.join(startDir, file);
     const ext = path.extname(file).toLowerCase();
@@ -18,17 +18,20 @@ function filesToMarkdown(startDir, files, options, bar) {
     try {
       stats = fs.statSync(filePath);
     } catch {
+      md += `## \`${file}\`\n\n`;
       md += `*(Unable to access file)*\n\n`;
       if (bar && typeof bar.increment === 'function') bar.increment();
       continue;
     }
 
     if (stats.size > MAX_SIZE) {
+      md += `## \`${file}\`\n\n`;
       md += `*(Skipped: file too large - ${(stats.size / 1024).toFixed(1)} KB)*\n\n`;
       if (bar && typeof bar.increment === 'function') bar.increment();
       continue;
     }
     if (SKIP_EXTENSIONS.includes(ext)) {
+      md += `## \`${file}\`\n\n`;
       md += `*(Skipped: extension \`${ext}\` not supported)*\n\n`;
       if (bar && typeof bar.increment === 'function') bar.increment();
       continue;
@@ -37,8 +40,11 @@ function filesToMarkdown(startDir, files, options, bar) {
     try {
       const content = fs.readFileSync(filePath, 'utf8');
       const lang = ext.slice(1) || 'txt';
+      const checksum = crypto.createHash('sha256').update(content).digest('hex');
+      md += `## \`${file}\` (checksum: ${checksum})\n\n`;
       md += `\`\`\`${lang}\n${content}\n\`\`\`\n\n`;
     } catch {
+      md += `## \`${file}\`\n\n`;
       md += `*(Unable to read file as text)*\n\n`;
     }
     if (bar && typeof bar.increment === 'function') bar.increment();
