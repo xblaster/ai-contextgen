@@ -1,6 +1,7 @@
 const mock = require('mock-fs');
 const fs = require('fs');
 const { snapshotMain, restoreMain } = require('../ai-contextgen');
+const crypto = require('crypto');
 
 jest.mock('cli-progress', () => {
   return {
@@ -26,18 +27,20 @@ describe('snapshotMain and restoreMain', () => {
     snapshotMain('/project', 'out.md');
 
     const md = fs.readFileSync('/project/out.md', 'utf8');
+    const hash = crypto.createHash('sha256').update('hello').digest('hex');
     expect(md).toContain('# AI-ContextGen Snapshot');
-    expect(md).toContain('`file.txt`');
+    expect(md).toContain(`(checksum: ${hash})`);
     expect(md).toContain('hello');
   });
 
   test('restoreMain recreates files from markdown', () => {
+    const hash = crypto.createHash('sha256').update('content').digest('hex');
     const md = [
       '# AI-ContextGen Snapshot',
       '',
       '---',
       '',
-      '## `a.txt`',
+      `## \`a.txt\` (checksum: ${hash})`,
       '',
       '```txt',
       'content',

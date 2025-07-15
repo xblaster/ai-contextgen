@@ -72,7 +72,7 @@ function restoreMain(markdownPath, outputDir) {
     process.exit(1);
   }
   const content = fs.readFileSync(mdPath, 'utf8');
-  const regex = /## `([^`]+)`\r?\n\r?\n```[^\n]*\r?\n([\s\S]*?)\r?\n```/g;
+  const regex = /## `([^`]+)`(?: \(checksum: ([^\)]+)\))?\r?\n\r?\n```[^\n]*\r?\n([\s\S]*?)\r?\n```/g;
   const files = [...content.matchAll(regex)];
   console.log(`Restoring ${files.length} files to ${outputDir}...`);
   const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);

@@ -1,17 +1,20 @@
 const mock = require('mock-fs');
 const fs = require('fs');
 const markdownToFiles = require('../src/markdownToFiles');
+const crypto = require('crypto');
 
 describe('markdownToFiles', () => {
   afterEach(() => mock.restore());
 
   test('creates directories and overwrites files from markdown snapshot', () => {
+    const hashA = crypto.createHash('sha256').update('new content').digest('hex');
+    const hashB = crypto.createHash('sha256').update('hello').digest('hex');
     const md = [
       '# AI-ContextGen Snapshot',
       '',
       '---',
       '',
-      '## `a.txt`',
+      `## \`a.txt\` (checksum: ${hashA})`,
       '',
       '```txt',
       'new content',
@@ -19,7 +22,7 @@ describe('markdownToFiles', () => {
       '',
       '---',
       '',
-      '## `sub/b.txt`',
+      `## \`sub/b.txt\` (checksum: ${hashB})`,
       '',
       '```txt',
       'hello',
@@ -58,5 +61,26 @@ describe('markdownToFiles', () => {
     mock({ '/out': {} });
     markdownToFiles(md, '/out');
     expect(fs.readFileSync('/out/a.txt', 'utf8')).toBe('content');
+  });
+
+  test('throws error on checksum mismatch', () => {
+    const hash = crypto.createHash('sha256').update('good').digest('hex');
+    const md = [
+      '# AI-ContextGen Snapshot',
+      '',
+      '---',
+      '',
+      `## \`a.txt\` (checksum: ${hash})`,
+      '',
+      '```txt',
+      'bad',
+      '```',
+      '',
+      '---',
+      ''
+    ].join('\n');
+
+    mock({ '/out': {} });
+    expect(() => markdownToFiles(md, '/out')).toThrow('Checksum mismatch');
   });
 });
