@@ -89,6 +89,10 @@ The tool creates a structured markdown file like this:
 }
 ```
 
+Each snapshot ends with a `Global checksum:` line containing a SHA-256 hash
+computed from all included files. The restore process verifies this checksum to
+ensure every file was recreated correctly.
+
 
 ### What Gets Included
 - ✅ All text-based source files

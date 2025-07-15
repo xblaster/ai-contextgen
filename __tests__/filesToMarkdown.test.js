@@ -21,10 +21,12 @@ describe('filesToMarkdown', () => {
     }, bar);
 
     const hash = crypto.createHash('sha256').update('hello').digest('hex');
+    const globalHash = crypto.createHash('sha256').update(`a.txt:${hash}\n`).digest('hex');
     expect(md).toContain(`(checksum: ${hash})`);
     expect(md).toContain('```txt\nhello');
     expect(md).toMatch(/\(Skipped: extension `\.png` not supported\)/);
     expect(md).toMatch(/\(Skipped: file too large/);
+    expect(md).toContain(`Global checksum: ${globalHash}`);
     expect(bar.increment).toHaveBeenCalledTimes(3);
   });
 });

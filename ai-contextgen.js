@@ -51,7 +51,7 @@ function snapshotMain(startDir, outputFile) {
   console.log(`Scanning files in ${startDir} (skipping per .gitignore, .ai-ignore, .git/, and config)...`);
   const barList = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
   barList.start(totalCount, 0);
-  const files = listFiles(startDir, startDir, ig, barList);
+  const files = listFiles(startDir, startDir, ig, barList).sort();
   barList.stop();
 
   console.log(`\nGenerating markdown output for ${files.length} files...`);

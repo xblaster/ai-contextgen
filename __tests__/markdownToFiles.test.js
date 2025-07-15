@@ -9,6 +9,7 @@ describe('markdownToFiles', () => {
   test('creates directories and overwrites files from markdown snapshot', () => {
     const hashA = crypto.createHash('sha256').update('new content').digest('hex');
     const hashB = crypto.createHash('sha256').update('hello').digest('hex');
+    const globalHash = crypto.createHash('sha256');
     const md = [
       '# AI-ContextGen Snapshot',
       '',
@@ -27,8 +28,14 @@ describe('markdownToFiles', () => {
       '```txt',
       'hello',
       '```',
+      '',
+      '---',
       ''
     ].join('\n');
+    globalHash.update(`a.txt:${hashA}\n`);
+    globalHash.update(`sub/b.txt:${hashB}\n`);
+    const overall = globalHash.digest('hex');
+    const mdWithChecksum = md + `\nGlobal checksum: ${overall}\n`;
 
     mock({
       '/out': {
@@ -36,7 +43,7 @@ describe('markdownToFiles', () => {
       }
     });
 
-    markdownToFiles(md, '/out');
+    markdownToFiles(mdWithChecksum, '/out');
 
     expect(fs.readFileSync('/out/a.txt', 'utf8')).toBe('new content');
     expect(fs.readFileSync('/out/sub/b.txt', 'utf8')).toBe('hello');
@@ -79,8 +86,33 @@ describe('markdownToFiles', () => {
       '---',
       ''
     ].join('\n');
+    const globalHash = crypto.createHash('sha256').update(`a.txt:${hash}\n`).digest('hex');
+    const mdWithChecksum = md + `\nGlobal checksum: ${globalHash}\n`;
 
     mock({ '/out': {} });
-    expect(() => markdownToFiles(md, '/out')).toThrow('Checksum mismatch');
+    expect(() => markdownToFiles(mdWithChecksum, '/out')).toThrow('Checksum mismatch');
+  });
+
+  test('throws error on global checksum mismatch', () => {
+    const hash = crypto.createHash('sha256').update('content').digest('hex');
+    const badGlobal = 'deadbeef';
+    const md = [
+      '# AI-ContextGen Snapshot',
+      '',
+      '---',
+      '',
+      `## \`a.txt\` (checksum: ${hash})`,
+      '',
+      '```txt',
+      'content',
+      '```',
+      '',
+      '---',
+      ''
+    ].join('\n');
+    const mdWithChecksum = md + `\nGlobal checksum: ${badGlobal}\n`;
+
+    mock({ '/out': {} });
+    expect(() => markdownToFiles(mdWithChecksum, '/out')).toThrow('Global checksum mismatch');
   });
 });
