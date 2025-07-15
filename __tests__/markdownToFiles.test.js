@@ -144,4 +144,32 @@ describe('markdownToFiles', () => {
     mock({ '/out': {} });
     expect(() => markdownToFiles(mdWithChecksum, '/out')).toThrow('Global checksum mismatch');
   });
+
+  test('restores file containing triple backticks', () => {
+    const content = 'line1\n```\ncode\n```\nline2';
+    const hash = crypto.createHash('sha256').update(content).digest('hex');
+    const globalHash = crypto
+      .createHash('sha256')
+      .update(`a.md:${hash}\n`)
+      .digest('hex');
+    const md = [
+      '# AI-ContextGen Snapshot',
+      '',
+      '###==AICG_FILE==###',
+      '',
+      `## \`a.md\` (checksum: ${hash})`,
+      '',
+      '```md',
+      content,
+      '```',
+      '',
+      '###==AICG_FILE==###',
+      ''
+    ].join('\n');
+    const mdWithChecksum = md + `\nGlobal checksum: ${globalHash}\n`;
+
+    mock({ '/out': {} });
+    markdownToFiles(mdWithChecksum, '/out');
+    expect(fs.readFileSync('/out/a.md', 'utf8')).toBe(content);
+  });
 });
