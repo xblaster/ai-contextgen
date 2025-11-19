@@ -1,0 +1,43 @@
+{
+  "name": "ai-contextgen",
+  "version": "2.0.0",
+  "description": "CLI utility to generate Markdown snapshots of codebases for AI context sharing",
+  "main": "ai-contextgen.js",
+  "bin": {
+    "ai-contextgen": "./ai-contextgen.js"
+  },
+  "scripts": {
+    "start": "node ai-contextgen.js",
+    "test": "jest --coverage"
+  },
+  "keywords": [
+    "ai",
+    "context",
+    "snapshot",
+    "codebase",
+    "markdown",
+    "llm"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cli-progress": "^3.12.0",
+    "commander": "^12.1.0",
+    "ignore": "^5.3.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "mock-fs": "^5.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "ai-contextgen.js"
+    ]
+  }
+}

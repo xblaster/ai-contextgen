@@ -1,0 +1,17 @@
+image: node:20
+
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+    - npm ci
+    - npm test
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+  artifacts:
+    reports:
+      junit: junit.xml
+    paths:
+      - coverage/
+    expire_in: 1 week
